@@ -800,6 +800,156 @@
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
 
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 500;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .modal-overlay.open .modal {
+    transform: translateY(0);
+  }
+  .modal-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+  .modal-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+  .modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  @media (max-width: 400px) { .modal-grid { grid-template-columns: 1fr; } }
+  .modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .modal-field label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .btn-danger {
+    padding: 10px 16px;
+    background: rgba(255,77,109,0.1);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-danger:hover { background: rgba(255,77,109,0.2); }
+
+  /* ─── CATEGORIES EDITOR ─── */
+  .cat-editor-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .cat-editor-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .cat-editor-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+  }
+  .cat-editor-header:hover { background: rgba(255,255,255,0.03); }
+  .cat-color-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .cat-editor-name { flex: 1; font-size: 12px; color: var(--text); }
+  .cat-editor-icon { font-size: 14px; }
+  .cat-editor-chevron { font-size: 10px; color: var(--muted); transition: transform 0.2s; }
+  .cat-editor-item.open .cat-editor-chevron { transform: rotate(180deg); }
+  .cat-editor-body { display: none; padding: 0 12px 12px; border-top: 1px solid var(--border); }
+  .cat-editor-item.open .cat-editor-body { display: block; }
+  .sub-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+  .sub-chip {
+    display: flex; align-items: center; gap: 4px;
+    padding: 4px 8px; border-radius: 4px;
+    background: var(--surface); border: 1px solid var(--border);
+    font-size: 10px; color: var(--text);
+  }
+  .sub-chip .del-sub {
+    color: var(--muted); cursor: pointer; font-size: 11px; line-height: 1;
+    padding: 0 2px;
+  }
+  .sub-chip .del-sub:hover { color: var(--danger); }
+  .add-sub-row { display: flex; gap: 6px; margin-top: 6px; }
+  .cat-edit-row { display: flex; gap: 6px; margin-top: 8px; align-items: center; }
+  .small-input {
+    flex: 1; padding: 7px 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text);
+    font-family: var(--font-mono); font-size: 11px; outline: none;
+  }
+  .small-input:focus { border-color: var(--accent2); }
+  .small-btn {
+    padding: 7px 12px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--surface2);
+    color: var(--muted); font-family: var(--font-mono); font-size: 11px;
+    cursor: pointer; white-space: nowrap; transition: all 0.15s;
+  }
+  .small-btn:hover { color: var(--text); border-color: var(--muted); }
+  .small-btn.accent { border-color: var(--accent); color: var(--accent); }
+
+  /* txn item clickable */
+  .txn-item { cursor: pointer; }
+  .txn-item:hover { border-color: var(--accent2) !important; }
+
+  /* balance input */
+  .balance-input-row {
+    display: flex; gap: 8px; align-items: center; margin-top: 8px;
+  }
+
   /* Scrollbar */
   ::-webkit-scrollbar { width: 4px; height: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -815,6 +965,7 @@
     <button class="tab" onclick="showPage('add')">+ Добавить</button>
     <button class="tab" onclick="showPage('gmail')">Gmail</button>
     <button class="tab" onclick="showPage('history')">История</button>
+    <button class="tab" onclick="showPage('categories')">Категории</button>
     <button class="tab" onclick="showPage('settings')">Настройки</button>
   </div>
   <button class="auth-btn" id="authBtn" onclick="handleAuth()">
@@ -905,6 +1056,15 @@
         <div class="stat-value" id="statTotal">0</div>
         <div class="stat-sub" id="statGmail">0 из Gmail</div>
       </div>
+      <div class="stat-card" style="border-color:var(--accent2)">
+        <div class="stat-label">Нач. баланс</div>
+        <div class="balance-input-row">
+          <input class="inline-input" type="number" id="initialBalanceInput" placeholder="0" step="0.01"
+            style="font-size:16px;font-family:var(--font-display);font-weight:700;padding:4px 8px"
+            onchange="saveInitialBalance()" value="0">
+        </div>
+        <div class="stat-sub">R$ на старте</div>
+      </div>
     </div>
 
     <div class="two-col">
@@ -944,20 +1104,14 @@
         </div>
         <div>
           <div style="font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:0.05em">КАТЕГОРИЯ</div>
-          <select class="inline-input" id="categoryInput">
-            <option value="еда">🍽 Еда</option>
-            <option value="подписки">📱 Подписки</option>
-            <option value="жильё">🏠 Жильё</option>
-            <option value="транспорт">🚗 Транспорт</option>
-            <option value="мастерская">🔧 Мастерская</option>
-            <option value="здоровье">💊 Здоровье</option>
-            <option value="развлечения">🎮 Развлечения</option>
-            <option value="прочее">📦 Прочее</option>
-            <option value="доход">💵 Доход</option>
-          </select>
+          <select class="inline-input" id="categoryInput" onchange="updateAddSubcategory()"></select>
         </div>
       </div>
 
+      <div style="margin-bottom:10px">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:0.05em">ПОДКАТЕГОРИЯ</div>
+        <select class="inline-input" id="subcategoryInput" style="width:100%"></select>
+      </div>
       <div style="margin-bottom:10px">
         <div style="font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:0.05em">ОПИСАНИЕ</div>
         <input class="inline-input" type="text" id="descInput" placeholder="Кому / за что..." style="width:100%">
@@ -1111,6 +1265,61 @@
 
   </div>
 
+
+  <!-- ═══ EDIT TRANSACTION MODAL ═══ -->
+  <div class="modal-overlay" id="editModal" onclick="closeModalOnBg(event)">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-title">Редактировать транзакцию</div>
+
+      <div class="type-toggle" style="margin-bottom:14px">
+        <button class="toggle-btn" id="editTypeOut" onclick="setEditType('out')">▼ Расход</button>
+        <button class="toggle-btn" id="editTypeIn"  onclick="setEditType('in')">▲ Доход</button>
+      </div>
+
+      <div class="modal-grid">
+        <div class="modal-field">
+          <label>Сумма (R$)</label>
+          <input class="inline-input" type="number" id="editAmount" step="0.01" min="0">
+        </div>
+        <div class="modal-field">
+          <label>Дата</label>
+          <input class="inline-input" type="date" id="editDate">
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label>Категория</label>
+        <select class="inline-input" id="editCategory" onchange="updateEditSubcategory()"></select>
+      </div>
+
+      <div class="modal-field" id="editSubcatField">
+        <label>Подкатегория</label>
+        <select class="inline-input" id="editSubcategory"></select>
+      </div>
+
+      <div class="modal-field">
+        <label>Описание</label>
+        <input class="inline-input" type="text" id="editDesc">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-primary" style="flex:1" onclick="saveEditTransaction()">✓ Сохранить</button>
+        <button class="btn-danger" onclick="deleteTransaction()">🗑</button>
+        <button class="btn-secondary" onclick="closeModal()">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CATEGORIES PAGE ═══ -->
+  <div class="page" id="page-categories">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+      <div style="font-family:var(--font-display);font-size:16px;font-weight:700">Категории</div>
+      <button class="btn-primary" style="padding:8px 14px;font-size:11px" onclick="addNewCategory()">+ Новая категория</button>
+    </div>
+    <div class="cat-editor-list" id="catEditorList"></div>
+  </div>
+
 </main>
 
 <!-- Toast -->
@@ -1139,26 +1348,50 @@ let state = {
   selectedEmails: new Set(),
   currentMonth: new Date().getMonth(),
   currentYear: new Date().getFullYear(),
-  filterCat: 'all'
+  filterCat: 'all',
+  initialBalance: 0
 };
 
-const CAT_COLORS = {
-  'еда': '#ff6b6b',
-  'подписки': '#7c6aff',
-  'жильё': '#4ecdc4',
-  'транспорт': '#45b7d1',
-  'мастерская': '#f7dc6f',
-  'здоровье': '#a8e6cf',
-  'развлечения': '#ff8b94',
-  'прочее': '#b0bec5',
-  'доход': '#00e5a0'
-};
+// ── Default categories with subcategories ──
+const DEFAULT_CATEGORIES = [
+  { id: 'еда',         name: 'Еда',         icon: '🍽', color: '#ff6b6b',
+    subs: ['Mercado','Restaurante','iFood','Café','Lanche'] },
+  { id: 'подписки',    name: 'Подписки',    icon: '📱', color: '#7c6aff',
+    subs: ['Netflix','Spotify','Amazon','YouTube','Outros'] },
+  { id: 'жильё',       name: 'Жильё',       icon: '🏠', color: '#4ecdc4',
+    subs: ['Aluguel','Condomínio','Luz','Água','Internet'] },
+  { id: 'транспорт',   name: 'Транспорт',   icon: '🚗', color: '#45b7d1',
+    subs: ['Uber','99','Ônibus','Gasolina','Estacionamento'] },
+  { id: 'мастерская',  name: 'Мастерская',  icon: '🔧', color: '#f7dc6f',
+    subs: ['Ferramentas','Materiais','Equipamentos','Outros'] },
+  { id: 'здоровье',    name: 'Здоровье',    icon: '💊', color: '#a8e6cf',
+    subs: ['Farmácia','Médico','Academia','Exames','Outros'] },
+  { id: 'развлечения', name: 'Развлечения', icon: '🎮', color: '#ff8b94',
+    subs: ['Cinema','Jogos','Viagem','Eventos','Outros'] },
+  { id: 'доход',       name: 'Доход',       icon: '💵', color: '#00e5a0',
+    subs: ['PIX recebido','Salário','Freelance','Outros'] },
+  { id: 'прочее',      name: 'Прочее',      icon: '📦', color: '#b0bec5',
+    subs: [] }
+];
 
-const CAT_ICONS = {
-  'еда': '🍽', 'подписки': '📱', 'жильё': '🏠',
-  'транспорт': '🚗', 'мастерская': '🔧', 'здоровье': '💊',
-  'развлечения': '🎮', 'прочее': '📦', 'доход': '💵'
-};
+let categories = [];
+
+function loadCategories() {
+  const saved = localStorage.getItem('finlog_categories');
+  categories = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
+}
+
+function saveCategories() {
+  localStorage.setItem('finlog_categories', JSON.stringify(categories));
+}
+
+function getCat(id) {
+  return categories.find(c => c.id === id) || { icon: '📦', color: '#b0bec5', name: id, subs: [] };
+}
+
+// Legacy compat helpers
+const CAT_COLORS = new Proxy({}, { get: (_, k) => getCat(k).color });
+const CAT_ICONS  = new Proxy({}, { get: (_, k) => getCat(k).icon });
 
 // ══════════════════════════════════════
 // INIT
@@ -1176,20 +1409,50 @@ function init() {
     state.transactions = JSON.parse(txns);
   }
 
+  // Load categories
+  loadCategories();
+
+  // Load initial balance
+  const ib = localStorage.getItem('finlog_initial_balance');
+  if (ib) state.initialBalance = parseFloat(ib) || 0;
+
   // Set today's date in add form
   document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
 
   if (config.clientId && config.sheetsId) {
     // Has config — show main app
     document.getElementById('page-setup').classList.remove('active');
+    populateCategorySelect('categoryInput');
+    updateAddSubcategory();
     showPage('dashboard');
     updateSettings();
-    // Try silent auth
     tryRestoreAuth();
   } else {
-    // Show setup
     document.getElementById('page-setup').classList.add('active');
     updateTabVisibility(false);
+  }
+}
+
+function populateCategorySelect(selectId, selectedVal) {
+  const sel = document.getElementById(selectId);
+  if (!sel) return;
+  sel.innerHTML = categories.map(c =>
+    `<option value="${c.id}" ${c.id === selectedVal ? 'selected' : ''}>${c.icon} ${c.name}</option>`
+  ).join('');
+}
+
+function updateAddSubcategory() {
+  const catId = document.getElementById('categoryInput')?.value;
+  const cat = getCat(catId);
+  const sel = document.getElementById('subcategoryInput');
+  if (!sel) return;
+  if (!cat.subs || cat.subs.length === 0) {
+    sel.innerHTML = '<option value="">—</option>';
+    sel.parentElement.style.display = 'none';
+  } else {
+    sel.parentElement.style.display = 'block';
+    sel.innerHTML = '<option value="">— без подкатегории —</option>' +
+      cat.subs.map(s => `<option value="${s}">${s}</option>`).join('');
   }
 }
 
@@ -1430,7 +1693,7 @@ async function fetchEmails() {
 
     for (let i = 0; i < limit; i++) {
       const msg = await apiCall(
-        `https://gmail.googleapis.com/gmail/v1/users/me/messages/${searchResp.messages[i].id}?format=metadata&metadataHeaders=Subject,Date,From`
+        `https://gmail.googleapis.com/gmail/v1/users/me/messages/${searchResp.messages[i].id}?format=metadata&metadataHeaders=Subject,Date,From&fields=id,internalDate,snippet,payload`
       );
 
       const headers = {};
@@ -1439,11 +1702,15 @@ async function fetchEmails() {
       const snippet = msg.snippet || '';
       const parsed = parsePicPaySnippet(snippet);
       const subject = headers['Subject'] || parsed.desc || '(без темы)';
+      // internalDate is unix ms — always reliable
+      const emailDate = msg.internalDate
+        ? new Date(parseInt(msg.internalDate)).toISOString().split('T')[0]
+        : (headers['Date'] ? new Date(headers['Date']).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
 
       emails.push({
         id: msg.id,
         subject,
-        date: headers['Date'] || '',
+        date: emailDate,
         from: headers['From'] || '',
         snippet,
         amount: parsed.amount,
@@ -1642,12 +1909,14 @@ async function addTransaction() {
     return;
   }
 
+  const subcategory = document.getElementById('subcategoryInput')?.value || '';
   const txn = {
     id: 'txn_' + Date.now() + '_' + Math.random().toString(36).substr(2,5),
     date: date || new Date().toISOString().split('T')[0],
     type: txnType,
     amount,
     category,
+    subcategory,
     desc: desc || category,
     source: 'manual'
   };
@@ -1824,10 +2093,11 @@ function renderDashboard() {
   const balance = totalIncome - totalExpense;
   const gmailCount = monthTxns.filter(t => t.source?.startsWith('gmail:')).length;
 
+  const totalBalance = state.initialBalance + totalIncome - totalExpense;
   document.getElementById('statExpense').textContent = `R$ ${totalExpense.toFixed(2)}`;
   document.getElementById('statIncome').textContent = `R$ ${totalIncome.toFixed(2)}`;
-  document.getElementById('statBalance').textContent = `R$ ${balance.toFixed(2)}`;
-  document.getElementById('statBalance').className = 'stat-value ' + (balance >= 0 ? 'green' : 'red');
+  document.getElementById('statBalance').textContent = `R$ ${totalBalance.toFixed(2)}`;
+  document.getElementById('statBalance').className = 'stat-value ' + (totalBalance >= 0 ? 'green' : 'red');
   document.getElementById('statTotal').textContent = monthTxns.length;
   document.getElementById('statExpenseCount').textContent = `${expenses.length} операций`;
   document.getElementById('statIncomeCount').textContent = `${incomes.length} операций`;
@@ -1932,13 +2202,14 @@ function txnHTML(t) {
   const dateStr = new Date(t.date).toLocaleDateString('ru-RU', {day:'numeric', month:'short'});
 
   return `
-    <div class="txn-item">
+    <div class="txn-item" onclick="openEditModal('${t.id}')">
       <div class="txn-icon" style="background:${color}22">${icon}</div>
       <div class="txn-main">
         <div class="txn-desc">${escHtml(t.desc || t.category)}</div>
         <div class="txn-meta">
           <span>${dateStr}</span>
           <span class="txn-tag">${t.category}</span>
+          ${t.subcategory ? `<span class="txn-tag" style="color:var(--accent2)">${t.subcategory}</span>` : ''}
           ${isGmail ? '<span class="txn-tag txn-source-gmail">📧 Gmail</span>' : ''}
         </div>
       </div>
@@ -1954,7 +2225,6 @@ function txnHTML(t) {
 // ══════════════════════════════════════
 function showPage(name) {
   if (name === 'setup-inner') {
-    // Fill in current values
     document.getElementById('clientIdInput').value = config.clientId;
     document.getElementById('sheetsIdInput').value = config.sheetsId;
     name = 'setup';
@@ -1966,13 +2236,18 @@ function showPage(name) {
   const page = document.getElementById('page-' + name);
   if (page) page.classList.add('active');
 
-  const tabMap = { dashboard: 0, add: 1, gmail: 2, history: 3, settings: 4 };
+  const tabMap = { dashboard: 0, add: 1, gmail: 2, history: 3, categories: 4, settings: 5 };
   if (tabMap[name] !== undefined) {
     document.querySelectorAll('.tab')[tabMap[name]]?.classList.add('active');
   }
 
-  if (name === 'dashboard') renderDashboard();
+  if (name === 'dashboard') {
+    renderDashboard();
+    // Restore initial balance input
+    document.getElementById('initialBalanceInput').value = state.initialBalance || 0;
+  }
   if (name === 'history') renderHistory();
+  if (name === 'categories') renderCategoriesEditor();
   if (name === 'settings') updateSettings();
 }
 
@@ -2010,6 +2285,230 @@ function clearLocalData() {
 // ══════════════════════════════════════
 // HELPERS
 // ══════════════════════════════════════
+// ══════════════════════════════════════
+// EDIT TRANSACTION MODAL
+// ══════════════════════════════════════
+let editingTxnId = null;
+let editTxnType = 'out';
+
+function openEditModal(txnId) {
+  const txn = state.transactions.find(t => t.id === txnId);
+  if (!txn) return;
+  editingTxnId = txnId;
+  editTxnType = txn.type || 'out';
+
+  // Fill fields
+  document.getElementById('editAmount').value = txn.amount;
+  document.getElementById('editDate').value = txn.date;
+  document.getElementById('editDesc').value = txn.desc || '';
+
+  // Fill category select
+  const catSel = document.getElementById('editCategory');
+  catSel.innerHTML = categories.map(c =>
+    `<option value="${c.id}" ${c.id === txn.category ? 'selected' : ''}>${c.icon} ${c.name}</option>`
+  ).join('');
+
+  // Fill subcategory
+  updateEditSubcategory(txn.subcategory);
+
+  // Set type buttons
+  setEditType(editTxnType);
+
+  document.getElementById('editModal').classList.add('open');
+}
+
+function setEditType(t) {
+  editTxnType = t;
+  document.getElementById('editTypeOut').className = 'toggle-btn' + (t === 'out' ? ' active-out' : '');
+  document.getElementById('editTypeIn').className  = 'toggle-btn' + (t === 'in'  ? ' active-in'  : '');
+}
+
+function updateEditSubcategory(selected) {
+  const catId = document.getElementById('editCategory').value;
+  const cat = getCat(catId);
+  const sel = document.getElementById('editSubcategory');
+  const field = document.getElementById('editSubcatField');
+
+  if (!cat.subs || cat.subs.length === 0) {
+    field.style.display = 'none';
+    return;
+  }
+  field.style.display = 'flex';
+  sel.innerHTML = '<option value="">— без подкатегории —</option>' +
+    cat.subs.map(s => `<option value="${s}" ${s === selected ? 'selected' : ''}>${s}</option>`).join('');
+}
+
+function closeModal() {
+  document.getElementById('editModal').classList.remove('open');
+  editingTxnId = null;
+}
+
+function closeModalOnBg(e) {
+  if (e.target === document.getElementById('editModal')) closeModal();
+}
+
+async function saveEditTransaction() {
+  const txn = state.transactions.find(t => t.id === editingTxnId);
+  if (!txn) return;
+
+  txn.type     = editTxnType;
+  txn.amount   = parseFloat(document.getElementById('editAmount').value) || txn.amount;
+  txn.date     = document.getElementById('editDate').value || txn.date;
+  txn.category = document.getElementById('editCategory').value;
+  txn.subcategory = document.getElementById('editSubcategory').value || '';
+  txn.desc     = document.getElementById('editDesc').value || txn.desc;
+
+  saveLocal();
+  closeModal();
+  renderDashboard();
+  renderHistory();
+
+  // Update in Sheets
+  if (state.isAuthed) {
+    await updateInSheets(txn);
+  }
+  toast('✓ Сохранено', 'success');
+}
+
+async function deleteTransaction() {
+  if (!editingTxnId) return;
+  if (!confirm('Удалить эту транзакцию?')) return;
+  state.transactions = state.transactions.filter(t => t.id !== editingTxnId);
+  saveLocal();
+  closeModal();
+  renderDashboard();
+  renderHistory();
+  toast('Удалено', 'info');
+}
+
+async function updateInSheets(txn) {
+  try {
+    // Find row by ID
+    const data = await apiCall(
+      `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetsId}/values/A:A`
+    );
+    const rows = data.values || [];
+    const rowIdx = rows.findIndex(r => r[0] === txn.id);
+    if (rowIdx < 1) { await appendToSheets(txn); return; }
+
+    await apiCall(
+      `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetsId}/values/A${rowIdx+1}:H${rowIdx+1}?valueInputOption=USER_ENTERED`,
+      'PUT',
+      { values: [[txn.id, txn.date, txn.type, txn.amount, txn.category, txn.desc, txn.source, txn.subcategory||'']] }
+    );
+  } catch(e) {
+    toast('Ошибка обновления Sheets: ' + e.message, 'error');
+  }
+}
+
+// ══════════════════════════════════════
+// INITIAL BALANCE
+// ══════════════════════════════════════
+function saveInitialBalance() {
+  const val = parseFloat(document.getElementById('initialBalanceInput').value) || 0;
+  state.initialBalance = val;
+  localStorage.setItem('finlog_initial_balance', val.toString());
+  renderDashboard();
+}
+
+// ══════════════════════════════════════
+// CATEGORIES EDITOR
+// ══════════════════════════════════════
+function renderCategoriesEditor() {
+  const list = document.getElementById('catEditorList');
+  list.innerHTML = categories.map((cat, ci) => `
+    <div class="cat-editor-item" id="catitem-${ci}">
+      <div class="cat-editor-header" onclick="toggleCatEditor(${ci})">
+        <span class="cat-editor-icon">${cat.icon}</span>
+        <span class="cat-color-dot" style="background:${cat.color}"></span>
+        <span class="cat-editor-name">${cat.name}</span>
+        <span class="cat-editor-chevron">▼</span>
+      </div>
+      <div class="cat-editor-body">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em">Редактировать</div>
+        <div class="cat-edit-row">
+          <input class="small-input" type="text" value="${cat.icon}" id="caticon-${ci}" maxlength="2" style="width:44px;flex:none;text-align:center">
+          <input class="small-input" type="text" value="${cat.name}" id="catname-${ci}" placeholder="Название">
+          <input class="small-input" type="color" value="${cat.color}" id="catcolor-${ci}" style="width:36px;flex:none;padding:2px 4px">
+          <button class="small-btn accent" onclick="saveCatEdit(${ci})">✓</button>
+          ${categories.length > 1 ? `<button class="small-btn" style="color:var(--danger)" onclick="deleteCat(${ci})">🗑</button>` : ''}
+        </div>
+
+        <div style="font-size:10px;color:var(--muted);margin:12px 0 6px;text-transform:uppercase;letter-spacing:0.08em">Подкатегории</div>
+        <div class="sub-list" id="sublist-${ci}">
+          ${(cat.subs||[]).map((s,si) => `
+            <div class="sub-chip">
+              ${escHtml(s)}
+              <span class="del-sub" onclick="deleteSub(${ci},${si})">×</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="add-sub-row">
+          <input class="small-input" type="text" id="newsub-${ci}" placeholder="Новая подкатегория...">
+          <button class="small-btn accent" onclick="addSub(${ci})">+ Добавить</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleCatEditor(ci) {
+  const el = document.getElementById('catitem-' + ci);
+  el.classList.toggle('open');
+}
+
+function saveCatEdit(ci) {
+  categories[ci].icon  = document.getElementById('caticon-' + ci).value.trim() || categories[ci].icon;
+  categories[ci].name  = document.getElementById('catname-' + ci).value.trim() || categories[ci].name;
+  categories[ci].color = document.getElementById('catcolor-' + ci).value;
+  saveCategories();
+  renderCategoriesEditor();
+  toast('✓ Категория обновлена', 'success');
+}
+
+function deleteCat(ci) {
+  if (!confirm('Удалить категорию "' + categories[ci].name + '"?')) return;
+  categories.splice(ci, 1);
+  saveCategories();
+  renderCategoriesEditor();
+}
+
+function addSub(ci) {
+  const input = document.getElementById('newsub-' + ci);
+  const val = input.value.trim();
+  if (!val) return;
+  categories[ci].subs = categories[ci].subs || [];
+  categories[ci].subs.push(val);
+  saveCategories();
+  input.value = '';
+  renderCategoriesEditor();
+  document.getElementById('catitem-' + ci).classList.add('open');
+}
+
+function deleteSub(ci, si) {
+  categories[ci].subs.splice(si, 1);
+  saveCategories();
+  renderCategoriesEditor();
+  document.getElementById('catitem-' + ci).classList.add('open');
+}
+
+function addNewCategory() {
+  categories.push({
+    id: 'cat_' + Date.now(),
+    name: 'Новая',
+    icon: '📌',
+    color: '#888888',
+    subs: []
+  });
+  saveCategories();
+  renderCategoriesEditor();
+  // Open last item
+  setTimeout(() => {
+    const last = categories.length - 1;
+    document.getElementById('catitem-' + last)?.classList.add('open');
+  }, 50);
+}
+
 function saveLocal() {
   localStorage.setItem('finlog_transactions', JSON.stringify(state.transactions));
 }
