@@ -1436,20 +1436,19 @@ async function fetchEmails() {
       const headers = {};
       (msg.payload?.headers || []).forEach(h => headers[h.name] = h.value);
 
-      // Try to extract amount from snippet
       const snippet = msg.snippet || '';
-      const amountMatch = snippet.match(/R\$\s*([\d.,]+)|BRL\s*([\d.,]+)|([\d.,]+)\s*reais/i);
-      const amount = amountMatch
-        ? parseFloat((amountMatch[1] || amountMatch[2] || amountMatch[3]).replace('.','').replace(',','.'))
-        : null;
+      const parsed = parsePicPaySnippet(snippet);
+      const subject = headers['Subject'] || parsed.desc || '(без темы)';
 
       emails.push({
         id: msg.id,
-        subject: headers['Subject'] || '(без темы)',
+        subject,
         date: headers['Date'] || '',
         from: headers['From'] || '',
         snippet,
-        amount,
+        amount: parsed.amount,
+        type: parsed.type,
+        desc: parsed.desc || subject,
         imported: state.transactions.some(t => t.source === 'gmail:' + msg.id)
       });
     }
@@ -1478,15 +1477,16 @@ function renderEmailList() {
       <div class="email-check ${state.selectedEmails.has(e.id) ? 'checked' : ''} ${e.imported ? 'imported' : ''}"
            onclick="toggleEmailSelect('${e.id}')">${state.selectedEmails.has(e.id) ? '✓' : e.imported ? '—' : ''}</div>
       <div class="email-info">
-        <div class="email-subject">${escHtml(e.subject)}</div>
+        <div class="email-subject">${escHtml(e.desc || e.subject)}</div>
         <div class="email-meta">
           ${formatEmailDate(e.date)} · 
           <span class="txn-tag txn-source-gmail">PicPay</span>
+          <span class="txn-tag" style="color:${e.type === 'in' ? 'var(--accent)' : 'var(--danger)'}">${e.type === 'in' ? '▲ доход' : '▼ расход'}</span>
           ${e.imported ? '<span class="txn-tag" style="color:var(--muted)">уже импортирован</span>' : ''}
         </div>
         <div style="font-size:10px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(e.snippet.substring(0,120))}</div>
       </div>
-      ${e.amount ? `<div class="email-amount">R$ ${e.amount.toFixed(2)}</div>` : '<div class="email-amount" style="color:var(--muted);font-size:10px">?</div>'}
+      ${e.amount ? `<div class="email-amount" style="color:${e.type === 'in' ? 'var(--accent)' : 'var(--danger)'}">${e.type === 'in' ? '+' : '−'}R$ ${e.amount.toFixed(2)}</div>` : '<div class="email-amount" style="color:var(--muted);font-size:10px">?</div>'}
     </div>
   `).join('');
 }
@@ -1513,6 +1513,51 @@ function selectAllEmails() {
   renderEmailList();
 }
 
+// ── PicPay snippet parser ──
+function parsePicPaySnippet(snippet) {
+  const s = snippet || '';
+  let type = 'out';
+  let amount = null;
+  let desc = '';
+
+  // Determine type: income vs expense
+  if (/recebeu um Pix de|recebeu.*Pix/i.test(s)) {
+    type = 'in';
+    const nameMatch = s.match(/Pix de ([A-ZÁÉÍÓÚÂÊÎÔÛÃÕÇÀÈÌÒÙÜ ]+?)(?:\s+Valor|\s+R\$|$)/i);
+    desc = nameMatch ? 'PIX de ' + titleCase(nameMatch[1].trim()) : 'PIX recebido';
+  } else if (/fez um Pix para|enviou.*Pix/i.test(s)) {
+    type = 'out';
+    const nameMatch = s.match(/Pix para ([A-ZÁÉÍÓÚÂÊÎÔÛÃÕÇÀÈÌÒÙÜ ]+?)(?:\s+Valor|\s+R\$|$)/i);
+    desc = nameMatch ? 'PIX para ' + titleCase(nameMatch[1].trim()) : 'PIX enviado';
+  } else if (/fatura.*PicPay Card|PicPay Card.*fatura/i.test(s)) {
+    type = 'out';
+    desc = 'Fatura PicPay Card';
+  } else if (/pagamento recebido/i.test(s)) {
+    type = 'in';
+    desc = 'Pagamento recebido';
+  } else if (/pagamento realizado/i.test(s)) {
+    type = 'out';
+    desc = 'Pagamento realizado';
+  }
+
+  // Extract amount
+  const amountMatch = s.match(/R\$\s*([\d.]+,\d{2})/);
+  if (amountMatch) {
+    amount = parseFloat(amountMatch[1].replace(/\./g, '').replace(',', '.'));
+  } else {
+    const amountMatch2 = s.match(/Valor[^R]*R\$\s*([\d.,]+)/i);
+    if (amountMatch2) {
+      amount = parseFloat(amountMatch2[1].replace(/\./g, '').replace(',', '.'));
+    }
+  }
+
+  return { type, amount, desc };
+}
+
+function titleCase(str) {
+  return str.toLowerCase().replace(/\w/g, c => c.toUpperCase());
+}
+
 async function importSelected() {
   if (state.selectedEmails.size === 0) {
     toast('Выбери письма для импорта', 'error');
@@ -1527,10 +1572,10 @@ async function importSelected() {
     const txn = {
       id: 'txn_' + Date.now() + '_' + Math.random().toString(36).substr(2,5),
       date: parseEmailDate(email.date),
-      type: 'out',
+      type: email.type || 'out',
       amount: email.amount || 0,
-      category: guessCategory(email.subject + ' ' + email.snippet),
-      desc: email.subject.substring(0, 80),
+      category: email.type === 'in' ? 'доход' : guessCategory(email.subject + ' ' + email.snippet),
+      desc: email.desc || email.subject.substring(0, 80),
       source: 'gmail:' + email.id
     };
 
@@ -1555,6 +1600,7 @@ function guessCategory(text) {
   if (t.includes('uber') || t.includes('99') || t.includes('onibus') || t.includes('transporte')) return 'транспорт';
   if (t.includes('farmacia') || t.includes('saude') || t.includes('medico') || t.includes('hospital')) return 'здоровье';
   if (t.includes('aluguel') || t.includes('condominio') || t.includes('agua') || t.includes('energia') || t.includes('luz')) return 'жильё';
+  if (t.includes('fatura') || t.includes('cartao') || t.includes('cartão')) return 'подписки';
   return 'прочее';
 }
 
